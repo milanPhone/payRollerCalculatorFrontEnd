@@ -9,6 +9,7 @@ import WelcomePage from './components/pages/Welcome'
 import LoginPage from './components/pages/Login'
 import { Route, Routes } from 'react-router-dom';
 import AddEmployeePage from './components/pages/AddEmployee';
+import AddSalePage from './components/pages/AddSalePage';
 
 
 
@@ -38,6 +39,7 @@ function App() {
           <Route path='/' element={<LoginPage />}></Route>
           <Route path='/welcome' element={<WelcomePage />} />
           <Route path='/add-employee' element={<AddEmployeePage />} />
+          <Route path='/add-sale' element={<AddSalePage />} />
           {/* <Route path='/add-salaried-employee' element={<SaleriedEmployeePage/>}/> */}
         </Routes>
         
