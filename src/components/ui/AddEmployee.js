@@ -23,6 +23,7 @@ import AddIcon from "@mui/icons-material/Add";
 
 import IconButton from "@mui/material/IconButton";
 import { Visibility } from "@mui/icons-material";
+import links from "../../util/links";
 
 const ShowCommission = (props) => {
   return (
@@ -287,6 +288,41 @@ const AddEmployee = (props) => {
     confirmPassword.isValid,
     password.isValid,
   ]);
+  
+  const addEmployeeHandler = async ()=>{
+    try{
+      const addEmployeeData = {};
+      addEmployeeData.email = email.inputValue;
+      addEmployeeData.name = name.inputValue;
+      addEmployeeData.role = role.inputValue;
+      if(role.inputValue=='salaried'){
+        addEmployeeData.basicSalary = basicSalary.inputValue
+      }
+      if(role.inputValue=='commission'){
+        addEmployeeData.commission = commission.inputValue
+      }
+      addEmployeeData.password = password.inputValue
+      const fetchResponse = await fetch(links.backendApiUrl+ '/agent/add-employee',{
+        method: 'POST',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(addEmployeeData)
+      })
+      if(fetchResponse.status!=201){
+        let newError = new Error();
+        error.message = 'some error occured'
+        throw error;
+      }
+      const addEmployeeDataResult = await fetchResponse.json()
+      console.log('result---',addEmployeeDataResult);
+    }
+    catch(err){
+      console.log('error---',err);
+    }
+    
+  }
 
   return (
     <Grid
@@ -559,6 +595,9 @@ const AddEmployee = (props) => {
               disabled={!isFormValid}
               color="secondary"
               sx={{ mt: 2 }}
+              onClick = {()=>{
+                addEmployeeHandler()
+              }}
             >
               Add
               <AddIcon sx={{ fontSize: "1.4 em", marginLeft: "0.2 em" }} />

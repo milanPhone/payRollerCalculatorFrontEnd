@@ -6,6 +6,7 @@ import EmailIcon from '@mui/icons-material/Email';
 
 import { useEffect, useState } from "react";
 import { Visibility } from "@mui/icons-material";
+import links from "../../util/links";
 
 const Login = (props)=>{
 
@@ -66,6 +67,7 @@ const Login = (props)=>{
     const loginHandler = ()=>{
         console.log('password = ',password.inputValue)
         console.log('email = ',email.inputValue)
+        fetch(links.backendApiUrl+'')
     }
 
     return (
