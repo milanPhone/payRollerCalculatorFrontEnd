@@ -3,10 +3,11 @@ import colors from "./colors";
 import LockIcon from '@mui/icons-material/Lock';
 import useFormInput from "../../hooks/useFormInput";
 import EmailIcon from '@mui/icons-material/Email';
-
+import {useHistory} from 'react-router-dom'
 import { useEffect, useState } from "react";
 import { Visibility } from "@mui/icons-material";
 import links from "../../util/links";
+import errors from "../../util/errors";
 
 const Login = (props)=>{
 
@@ -63,11 +64,45 @@ const Login = (props)=>{
 
     const [isFormValid,setIsFormValid] = useState(false)
     useEffect(()=>{console.log(password.isValid,email.isValid);setIsFormValid(password.isValid && email.isValid);},[password.isValid,email.isValid])
-
-    const loginHandler = ()=>{
-        console.log('password = ',password.inputValue)
-        console.log('email = ',email.inputValue)
-        fetch(links.backendApiUrl+'')
+    let history = useHistory()
+    const loginHandler = async ()=>{
+        try{
+            console.log('password = ',password.inputValue)
+            console.log('email = ',email.inputValue)
+            let loginData = {
+                email: email.inputValue,
+                password: password.inputValue
+            }
+            const loginResponse = await fetch(links.backendApiUrl+'/agent/login',{
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                  },
+                  body: JSON.stringify(loginData)
+            });
+            if(loginResponse.status == 500){
+                let newError = new Error();
+                const errorResult = await loginResponse.json()
+                newError.message = errorResult.error;
+                throw newError;
+            }
+            if(loginResponse.status!=201){
+                let newError = new Error();
+                newError.message = errors.serverError;
+                throw newError;
+            }
+            const loginResult = await loginResponse.json();
+            localStorage.setItem('currentUser',JSON.stringify({
+                user_id: loginResult.agent_id,
+                authToken: loginResult.authToken
+            }))
+            //code to add message component...!!
+            history.replace('/welcome')
+        }
+        catch(err){
+            console.log('error----',err)
+        }
     }
 
     return (
