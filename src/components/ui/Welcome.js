@@ -12,7 +12,7 @@ const Welcome = () => {
           justifyContent: "center",
         }}
       >
-        <Grid
+        <Grid item
           xs={11}
           md={7}
           sx={{

@@ -3,11 +3,11 @@ import colors from "./colors";
 import LockIcon from '@mui/icons-material/Lock';
 import useFormInput from "../../hooks/useFormInput";
 import EmailIcon from '@mui/icons-material/Email';
-import {useHistory} from 'react-router-dom'
 import { useEffect, useState } from "react";
 import { Visibility } from "@mui/icons-material";
 import links from "../../util/links";
 import errors from "../../util/errors";
+import { useNavigate } from "react-router-dom";
 
 const Login = (props)=>{
 
@@ -64,7 +64,7 @@ const Login = (props)=>{
 
     const [isFormValid,setIsFormValid] = useState(false)
     useEffect(()=>{console.log(password.isValid,email.isValid);setIsFormValid(password.isValid && email.isValid);},[password.isValid,email.isValid])
-    let history = useHistory()
+    let navigate = useNavigate();
     const loginHandler = async ()=>{
         try{
             console.log('password = ',password.inputValue)
@@ -97,8 +97,9 @@ const Login = (props)=>{
                 user_id: loginResult.agent_id,
                 authToken: loginResult.authToken
             }))
+            console.log('loginResult----',loginResult)
             //code to add message component...!!
-            history.replace('/welcome')
+            navigate('/welcome',{replace: true})
         }
         catch(err){
             console.log('error----',err)

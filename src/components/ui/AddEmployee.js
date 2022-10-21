@@ -50,7 +50,6 @@ const ShowCommission = (props) => {
               props.commission.inputValueBlur(e);
             }}
             error={props.commission.hasError}
-            helperText={props.commission.helperText}
             startAdornment={
               <InputAdornment position="start">
                 <PercentIcon color="secondary" />
@@ -95,7 +94,6 @@ const ShowBasicSalary = (props) => {
               props.basicSalary.inputValueBlur(e);
             }}
             error={props.basicSalary.hasError}
-            helperText={props.basicSalary.helperText}
             startAdornment={
               <InputAdornment position="start">
                 <PaidIcon color="secondary" />
@@ -312,8 +310,8 @@ const AddEmployee = (props) => {
       })
       if(fetchResponse.status!=201){
         let newError = new Error();
-        error.message = 'some error occured'
-        throw error;
+        newError.message = 'some error occured'
+        throw newError;
       }
       const addEmployeeDataResult = await fetchResponse.json()
       console.log('result---',addEmployeeDataResult);
@@ -376,7 +374,6 @@ const AddEmployee = (props) => {
                   email.inputValueBlur(e);
                 }}
                 error={email.hasError}
-                helperText={email.helperText}
                 startAdornment={
                   <InputAdornment position="start">
                     {/* <IconButton
