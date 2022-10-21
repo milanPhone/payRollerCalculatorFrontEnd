@@ -24,6 +24,9 @@ import AddIcon from "@mui/icons-material/Add";
 import IconButton from "@mui/material/IconButton";
 import { Visibility } from "@mui/icons-material";
 import links from "../../util/links";
+import errors from "../../util/errors";
+import { Navigate, useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
 
 const ShowCommission = (props) => {
   return (
@@ -114,6 +117,7 @@ const ShowBasicSalary = (props) => {
 };
 
 const AddEmployee = (props) => {
+  const navigate = useNavigate();
   const emailValidator = (str) => {
     if (str.trim() == "") {
       return {
@@ -255,6 +259,11 @@ const AddEmployee = (props) => {
 
       return oldState;
     }
+    if(action.type== 'reset'){
+      let oldState = {...confirmPasswordInitial};
+      return oldState;
+
+    }
   };
 
   const [confirmPassword, confirmPasswordDispatch] = useReducer(
@@ -287,37 +296,77 @@ const AddEmployee = (props) => {
     password.isValid,
   ]);
   
+  const currentUser = useSelector((state)=>{return state.currentUserReducer.currentUser})
+  let token = ''
   const addEmployeeHandler = async ()=>{
     try{
       const addEmployeeData = {};
       addEmployeeData.email = email.inputValue;
       addEmployeeData.name = name.inputValue;
       addEmployeeData.role = role.inputValue;
+      console.log('currentUser-----',currentUser);
+      if(currentUser.user_id!=-1){
+        console.log('currentUser----',currentUser);
+        token = currentUser.authToken;
+      }
       if(role.inputValue=='salaried'){
         addEmployeeData.basicSalary = basicSalary.inputValue
       }
       if(role.inputValue=='commission'){
         addEmployeeData.commission = commission.inputValue
       }
+
       addEmployeeData.password = password.inputValue
-      const fetchResponse = await fetch(links.backendApiUrl+ '/agent/add-employee',{
+      console.log('token----',token)
+      const fetchResponse = await fetch(links.backendApiUrl+ '/agent/add-agent',{
         method: 'POST',
         headers: {
           'Accept': 'application/json',
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
         },
         body: JSON.stringify(addEmployeeData)
       })
+      if(fetchResponse.status == 401){
+        let newError = new Error();
+        newError.message = errors.unauthorizedAccess;
+        newError.statusCode = fetchResponse.status
+        throw newError;
+      }
+      if(fetchResponse.status == 500){
+        let newError = new Error();
+        let errorResult = await fetchResponse.json()
+        newError.message = errorResult.error;
+        throw newError;
+      }
       if(fetchResponse.status!=201){
         let newError = new Error();
-        newError.message = 'some error occured'
+        newError.message = errors.serverError;
         throw newError;
       }
       const addEmployeeDataResult = await fetchResponse.json()
       console.log('result---',addEmployeeDataResult);
+      let values = {
+        email,
+        name,
+        role,
+        basicSalary,
+        commission,
+        password
+      }
+      for(let prop in values){
+        values[prop].reset();
+      }
+      confirmPasswordDispatch({type: 'reset'})
+
     }
     catch(err){
-      console.log('error---',err);
+      //display error message
+      if(err.statusCode==401){
+        navigate('/login',{replace: true})
+        
+      }
+      console.log('error---',err.message);
     }
     
   }
@@ -414,7 +463,6 @@ const AddEmployee = (props) => {
                   name.inputValueBlur(e);
                 }}
                 error={name.hasError}
-                helperText={name.helperText}
                 startAdornment={
                   <InputAdornment position="start">
                     <AbcIcon color="secondary" />
@@ -463,7 +511,6 @@ const AddEmployee = (props) => {
                   });
                 }}
                 error={password.hasError}
-                helperText={password.helperText}
                 endAdornment={
                   <InputAdornment position="end">
                     <IconButton

@@ -2,8 +2,11 @@ import { Button, Grid, Typography } from "@mui/material";
 import colors from "./colors";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
 import { Link } from "react-router-dom";
+import { useEffect } from "react";
+import { useSelector } from "react-redux";
 
 const Welcome = () => {
+  const currentUser = useSelector((state)=>{return state.currentUserReducer.currentUser})
   return (
     <>
       <Grid
@@ -30,7 +33,7 @@ const Welcome = () => {
             variant="h4"
             gutterBottom
           >
-            Welcome currentUser....!!
+            Welcome {currentUser.name.split(' ')[0]}
           </Typography>
           <Typography
             sx={{

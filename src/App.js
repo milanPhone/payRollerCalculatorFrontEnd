@@ -10,13 +10,26 @@ import LoginPage from './components/pages/Login'
 import { Route, Routes } from 'react-router-dom';
 import AddEmployeePage from './components/pages/AddEmployee';
 import AddSalePage from './components/pages/AddSalePage';
+import { Provider, useDispatch } from 'react-redux';
+import { useEffect } from 'react';
+import { currentUserActions } from './store/slices/currentUserSlice';
+import store from './store/store';
 
 
 
 
 
 function App() {
+  const reduxDispatch = useDispatch();
+  useEffect(()=>{
+    if(localStorage.getItem('currentUser')){
+      reduxDispatch(currentUserActions.setCurrentUser({currentUser: JSON.parse(localStorage.getItem('currentUser'))}))
+    }
+  })
+
   return (
+    
+
     <div className="App">
       {/* <header className="App-header">
         <img src={logo} className="App-logo" alt="logo" />

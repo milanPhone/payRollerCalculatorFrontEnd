@@ -8,9 +8,12 @@ import { Visibility } from "@mui/icons-material";
 import links from "../../util/links";
 import errors from "../../util/errors";
 import { useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { currentUserActions } from "../../store/slices/currentUserSlice";
 
 const Login = (props)=>{
-
+    // const currentUser = useSelector((state)=>{state.currentUser.currentUserReducer})
+    const reduxDispatch = useDispatch();
     const passwordValidator = (str)=>{
         console.log('str = ',str)
         if(str.match(/\s/g)){
@@ -93,10 +96,13 @@ const Login = (props)=>{
                 throw newError;
             }
             const loginResult = await loginResponse.json();
-            localStorage.setItem('currentUser',JSON.stringify({
+            let currentUserObj = {
                 user_id: loginResult.agent_id,
-                authToken: loginResult.authToken
-            }))
+                authToken: loginResult.authToken,
+                name: loginResult.name
+            }
+            localStorage.setItem('currentUser',JSON.stringify(currentUserObj))
+            reduxDispatch(currentUserActions.setCurrentUser({currentUser:currentUserObj}))
             console.log('loginResult----',loginResult)
             //code to add message component...!!
             navigate('/welcome',{replace: true})
