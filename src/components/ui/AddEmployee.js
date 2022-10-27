@@ -363,7 +363,7 @@ const AddEmployee = (props) => {
     catch(err){
       //display error message
       if(err.statusCode==401){
-        navigate('/login',{replace: true})
+        navigate('/',{replace: true})
         
       }
       console.log('error---',err.message);

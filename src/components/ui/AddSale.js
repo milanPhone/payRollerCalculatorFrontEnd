@@ -41,17 +41,45 @@ const AddSale = (props) => {
     });
   };
   const addSaleHandler = async ()=>{
-    const saleResponse = await fetch(links.backendApiUrl+'/api/sales/add-sale',{
-      method: 'POST',
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(saleValues)
-    })
-    console.log('response----',saleResponse)
-    const saleResponseResult = await saleResponse.json()
-    console.log('saleResponseResult----',saleResponseResult)
+    let token = '';
+    try{
+
+      const saleResponse = await fetch(links.backendApiUrl+'/api/sales/add-sale',{
+        method: 'POST',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify(saleValues)
+      })
+      console.log('response----',saleResponse)
+      if(saleResponse.status==500){
+        let errorResult = saleResponse.json()
+        let newError = new Error();
+        newError.message = errorResult.error
+        throw newError;
+      }
+      if(saleResponse.status!=201){
+        let errorResult = saleResponse.json()
+        let newError = new Error();
+        newError.message = errorResult.error
+        throw newError;
+      }
+      const saleResponseResult = await saleResponse.json()
+      console.log('saleResponseResult----',saleResponseResult)
+      for(let prop in saleFormFields){
+        setSaleValues((prevState)=>{
+            let oldState = {...prevState};
+            oldState[prop] = '';
+            return oldState;
+        })
+      }
+
+    }
+    catch(err){
+      
+    }
   }
   return (
     <Grid container sx={{ justifyContent: "center" }}>
@@ -96,6 +124,7 @@ const AddSale = (props) => {
                 onChange={(e) => {
                   saleValuesHandler(keyName, e.target.value);
                 }}
+                value = {saleValues[keyName]}
               />
             </Grid>
           );
