@@ -14,6 +14,7 @@ import { Provider, useDispatch } from 'react-redux';
 import { useEffect } from 'react';
 import { currentUserActions } from './store/slices/currentUserSlice';
 import store from './store/store';
+import { Alert, Snackbar } from '@mui/material';
 
 
 
@@ -48,6 +49,11 @@ function App() {
       <ThemeProvider theme={theme}>
 
         <NavbarComponent />
+        <Snackbar anchorOrigin={{vertical:'top',horizontal:'right'}} open={alertData.alertOpen} autoHideDuration={6000} onClose={handleClose}>
+                <Alert severity={alertData.severety} >
+                    {alertData.message}
+                </Alert>
+        </Snackbar>
         <Routes >
           <Route path='/' element={<LoginPage />}></Route>
           <Route path='/welcome' element={<WelcomePage />} />

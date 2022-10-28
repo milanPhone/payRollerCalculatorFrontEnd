@@ -10,6 +10,9 @@ import errors from "../../util/errors";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { currentUserActions } from "../../store/slices/currentUserSlice";
+import { alertHandlerActions } from "../../store/slices/alert-handler-slice";
+import messages from "../../util/messages";
+import severties from "../../util/severties";
 
 const Login = (props)=>{
     // const currentUser = useSelector((state)=>{state.currentUser.currentUserReducer})
@@ -105,10 +108,12 @@ const Login = (props)=>{
             reduxDispatch(currentUserActions.setCurrentUser({currentUser:currentUserObj}))
             console.log('loginResult----',loginResult)
             //code to add message component...!!
+            reduxDispatch(alertHandlerActions.fireAlert({message: messages.loggedIn, severety:severties.success }))
             navigate('/welcome',{replace: true})
         }
         catch(err){
             console.log('error----',err)
+            reduxDispatch(alertHandlerActions.fireAlert({message: err.message, severety:severties.error }))
         }
     }
 

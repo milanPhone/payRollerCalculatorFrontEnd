@@ -47,12 +47,12 @@ const NavbarComponent = (props)=>{
                     <Button sx={{ ml: 'auto',color: 'white'}}  startIcon={<AccountCircleIcon/>}>
                         Hello User
                     </Button>
-                    <Button sx={{color: 'white'}}  startIcon={<AccountCircleIcon/>}>
+                    {/* <Button sx={{color: 'white'}}  startIcon={<AccountCircleIcon/>}>
                         Add Employee
                     </Button>
                     <Button sx={{color: 'white'}}  startIcon={<AccountCircleIcon/>}>
                                     Show {empText} Details
-                    </Button>
+                    </Button> */}
                     {/* <NavTabs /> */}
                 </Toolbar>
             </AppBar>
