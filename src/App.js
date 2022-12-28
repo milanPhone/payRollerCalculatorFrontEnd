@@ -10,18 +10,24 @@ import LoginPage from './components/pages/Login'
 import { Route, Routes } from 'react-router-dom';
 import AddEmployeePage from './components/pages/AddEmployee';
 import AddSalePage from './components/pages/AddSalePage';
-import { Provider, useDispatch } from 'react-redux';
+import { Provider, useDispatch, useSelector } from 'react-redux';
 import { useEffect } from 'react';
 import { currentUserActions } from './store/slices/currentUserSlice';
 import store from './store/store';
 import { Alert, Snackbar } from '@mui/material';
+import { alertHandlerActions } from './store/slices/alert-handler-slice';
+import DisplaySalesPage from './components/pages/DisplaySalesPage';
 
 
 
 
 
 function App() {
+  const alertData = useSelector((state)=>{return state.alertHandlerSlice})
   const reduxDispatch = useDispatch();
+  const handleClose = ()=>{
+    reduxDispatch(alertHandlerActions.closeAlert());
+  }
   useEffect(()=>{
     if(localStorage.getItem('currentUser')){
       reduxDispatch(currentUserActions.setCurrentUser({currentUser: JSON.parse(localStorage.getItem('currentUser'))}))
@@ -59,6 +65,7 @@ function App() {
           <Route path='/welcome' element={<WelcomePage />} />
           <Route path='/add-employee' element={<AddEmployeePage />} />
           <Route path='/add-sale' element={<AddSalePage />} />
+          <Route path='/display-sales' element={<DisplaySalesPage />} />
           {/* <Route path='/add-salaried-employee' element={<SaleriedEmployeePage/>}/> */}
         </Routes>
         

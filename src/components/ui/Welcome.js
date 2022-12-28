@@ -1,11 +1,17 @@
 import { Button, Grid, Typography } from "@mui/material";
 import colors from "./colors";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useEffect } from "react";
 import { useSelector } from "react-redux";
 
 const Welcome = () => {
+  const navigate = useNavigate()
+  const navigateTo = (link)=>{
+    navigate({
+      pathname: link
+    })
+  }
   const currentUser = useSelector((state)=>{return state.currentUserReducer.currentUser})
   return (
     <>
@@ -47,16 +53,31 @@ const Welcome = () => {
           >
             Select An option....!!
           </Typography>
-          <Link to="/add-employee">
+            <Typography>
+
             <Button
               variant="contained"
               color="secondary"
               sx={{ my: 1 }}
               startIcon={<AddCircleIcon />}
+              onClick={()=>{navigateTo('/add-employee')}}
             >
               Add Employee
             </Button>
-          </Link>
+            </Typography>
+            <Typography>
+
+            <Button
+              variant="contained"
+              color="secondary"
+              sx={{ my: 1 }}
+              startIcon={<AddCircleIcon />}
+              onClick={()=>{navigateTo('/add-sale')}}
+            >
+              Add sale
+            </Button>
+            </Typography>
+          
         </Grid>
       </Grid>
     </>
